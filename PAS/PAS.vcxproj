@@ -115,7 +115,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="CoordFunctions.cpp" />
+    <ClCompile Include="DisplayEngUnitFunctions.cpp" />
+    <ClCompile Include="MFDPersist.cpp" />
+    <ClCompile Include="ParseFunctions.cpp" />
+    <ClCompile Include="PAS.cpp" />
+    <ClCompile Include="PAS_ButtonHandling.cpp" />
+    <ClCompile Include="PAS_Buttons.cpp" />
+    <ClCompile Include="PAS_GCore.cpp" />
+    <ClCompile Include="PAS_Interface.cpp" />
+    <ClCompile Include="PAS_LCore.cpp" />
+    <ClCompile Include="PAS_MFDUpdate.cpp" />
+    <ClCompile Include="PAS_SketchpadFunctions.cpp" />
+    <ClCompile Include="PAS_VCore.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CoordFunctions.hpp" />
+    <ClInclude Include="DisplayEngUnitFunctions.h" />
+    <ClInclude Include="MFDButtonPage.hpp" />
+    <ClInclude Include="MFDPersist.hpp" />
+    <ClInclude Include="ParseFunctions.h" />
+    <ClInclude Include="PAS.hpp" />
+    <ClInclude Include="PAS_Buttons.hpp" />
+    <ClInclude Include="PAS_GCore.hpp" />
+    <ClInclude Include="PAS_Interface.hpp" />
+    <ClInclude Include="PAS_LCore.hpp" />
+    <ClInclude Include="PAS_VCore.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
