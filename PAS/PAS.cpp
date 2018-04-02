@@ -49,12 +49,13 @@
 #include "ParseFunctions.h"
 #include "MFDPersist.hpp"
 
+
 // ====================================================================================================================
 // Global variables
 
 PAS_GCore *g_SC = nullptr;    // points to the static persistence core
 const char *g_moduleName = "PAS";
-const char *g_moduleVersion = "0.1a";
+const char *g_moduleVersion = "0.1c";
 const char *g_moduleCompileDate = __DATE__;
 
 // ====================================================================================================================
@@ -62,12 +63,10 @@ const char *g_moduleCompileDate = __DATE__;
 
 // Constructor executes on any F8, any resize of an ExtMFD, or any vessel switch
 PAS::PAS (DWORD w, DWORD h, VESSEL *vessel, UINT mfd)
-: MFD2 (w, h, vessel)
-{
+: MFD2 (w, h, vessel), moduleName(g_moduleName), moduleVersion(g_moduleVersion), moduleCompileDate(g_moduleCompileDate) {
   if (g_SC == nullptr) {
     g_SC = new PAS_GCore();
     GC = g_SC;
-    strcpy_s(GC->moduleName, 32, g_moduleName);
   }
   GC = g_SC;
 
@@ -87,6 +86,7 @@ PAS::PAS (DWORD w, DWORD h, VESSEL *vessel, UINT mfd)
   // Any construction for the display side of this MFD instance
   font = oapiCreateFont (h/25, true, "Fixed", FONT_NORMAL, 0);
 
+  sprintf_s(moduleTitle, 32, "PAS MFD %s", moduleVersion);
   return;
 }
 
@@ -98,9 +98,6 @@ PAS::~PAS ()
 }
 
 
-
-
-
 // ====================================================================================================================
 // Save/load from .scn functions
 void PAS::ReadStatus(FILEHANDLE scn) {
@@ -109,6 +106,7 @@ void PAS::ReadStatus(FILEHANDLE scn) {
   char *ll;
   char *key;
   int pI;
+  bool pB;
 
   while (oapiReadScenario_nextline(scn, line)) {
 
@@ -127,6 +125,11 @@ void PAS::ReadStatus(FILEHANDLE scn) {
       }
       continue;
     }
+    if (!_stricmp(key, "HUD_MODE")) {
+      if (!ParseBool(&ll, &pB)) continue;
+      GC->showHUD = pB;
+      continue;
+    }
 
 
   }
@@ -138,6 +141,7 @@ void PAS::ReadStatus(FILEHANDLE scn) {
 void PAS::WriteStatus(FILEHANDLE scn) const {
 
   oapiWriteScenario_int(scn, (char *) "LOG_MODE", VC->logState);
+  oapiWriteScenario_string(scn, (char *) "HUD_MODE", GC->showHUD? (char *) "TRUE" : (char *) "FALSE");
 
   return;
 }

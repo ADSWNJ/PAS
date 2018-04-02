@@ -10,10 +10,25 @@
 //
 // ==============================================================
 
+#include <string>
 #include "PAS_GCore.hpp"
 #include "PAS_VCore.hpp"
 
-PAS_GCore::PAS_GCore() {
+// ====================================================================================================================
+// Global variables
+
+extern const char *g_moduleName;
+extern const char *g_moduleVersion;
+extern const char *g_moduleCompileDate;
+
+PAS_GCore::PAS_GCore()
+  : mma("PAS") {
+  string mma_ver;
+  mma_ok = mma.GetVersion(&mma_ver);
+
+  char buf[128];
+  sprintf(buf, "   >>> %s connected to MMExt version %s", g_moduleName, mma_ver.c_str());
+  oapiWriteLog(buf);
   return;
 }
 

@@ -19,10 +19,12 @@ PAS_Buttons::PAS_Buttons()
 {
     static const MFDBUTTONMENU mnu0[] =
     {
-      {"Mode", 0, 'M'}
+      {"Mode", 0, 'M'},
+      {"HUD",  0, 'H'}
     };
     RegisterPage(mnu0, sizeof(mnu0) / sizeof(MFDBUTTONMENU));
-    RegisterFunction("MOD", OAPI_KEY_P, &PAS::Button_MOD);
+    RegisterFunction("MOD", OAPI_KEY_M, &PAS::Button_MOD);
+    RegisterFunction("HUD", OAPI_KEY_H, &PAS::Button_HUD);
 
     // Page 2, etc...
     //static const MFDBUTTONMENU mnu1[] =

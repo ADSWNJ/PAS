@@ -46,3 +46,8 @@ bool PAS::ConsumeKeyBuffered (DWORD key) {
 void PAS::Button_MOD() {
   return;
 }
+
+void PAS::Button_HUD() {
+  GC->showHUD = !GC->showHUD;
+  return;
+}

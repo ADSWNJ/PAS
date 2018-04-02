@@ -16,6 +16,7 @@
 #include "orbitersdk.h"
 #include "PAS_Buttons.hpp"
 #include "MFDPersist.hpp"
+#include "MMExt2_Advanced.hpp"
 using namespace std;
 
 #ifndef _PAS_GCORE_H
@@ -34,11 +35,13 @@ class PAS_GCore {
     PAS_GCore();
     ~PAS_GCore();
     MFDPersist P;
-    char moduleName[32];
+    bool showHUD = true;
 
   private:
     double coreSimT{ 0.0 };
     double coreSimDT;
+    MMExt2::Advanced mma;
+    bool mma_ok;
 };
 
 

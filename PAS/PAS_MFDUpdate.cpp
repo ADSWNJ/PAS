@@ -20,9 +20,9 @@ bool PAS::Update(oapi::Sketchpad *skp)
 {
   LC->skp = skp;
   if (LC->showMessage) return DisplayMessageMode();
-
-  skpTitle("PAS MFD");
+  skpTitle(moduleTitle);
   int l = 3;
+  l = 12;
 
   skpFormatText(2, l++, "Hello world");
 

@@ -17,10 +17,10 @@
 #include "PAS_GCore.hpp"   
 #include "PAS_VCore.hpp" 
 #include "PAS_LCore.hpp" 
-
+#include "EnjoLib\IDrawsHUD.hpp"
 
 extern "C" 
-class PAS: public MFD2
+class PAS: public MFD2, EnjoLib::IDrawsHUD
 {
 public:
 	PAS (DWORD w, DWORD h, VESSEL *vessel, UINT mfd);
@@ -36,11 +36,23 @@ public:
 
   // Button Press Handlers
   void Button_MOD();
-
+  void Button_HUD();
 
   // Persistence functions
   void ReadStatus(FILEHANDLE scn);
   void WriteStatus(FILEHANDLE scn) const;
+
+  // EnjoLib::IDrawsHUD methods:
+  void DrawHUD(int mode, const HUDPAINTSPEC *hps, oapi::Sketchpad * skp);
+  bool ShouldDrawHUD() const { return GC->showHUD; };
+  const char * GetModuleName() const { return moduleName; };
+
+  // Module details
+  const char *moduleName;
+  const char *moduleVersion;
+  const char *moduleCompileDate;
+  char moduleTitle[32];
+
 
 protected:
   PAS_GCore* GC;
