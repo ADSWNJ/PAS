@@ -47,7 +47,52 @@ void PAS::Button_MOD() {
   return;
 }
 
+void PAS::Button_TGT() {
+  LC->mode = 1;
+  LC->B.SelectPage(this, 1);
+  return;
+}
+
 void PAS::Button_HUD() {
   GC->showHUD = !GC->showHUD;
+
+  return;
+}
+
+void PAS::Button_OK() {
+  LC->mode = 0;
+  LC->B.SelectPage(this, 0);
+  return;
+}
+
+void PAS::Button_NB() {
+  BaseSelect::BaseDef *b = GC->bs.GetNextBase();
+  if (b) {
+    BaseSelect::RunwayDef *r = GC->bs.GetNextRunway();
+    VC->ohBase = b->ohBase;
+    VC->tgtBaseLoc = r->runwayname;
+    VC->tgtLatDeg = b->lat;
+    VC->tgtLonDeg = b->lon;
+    VC->tgtManual = false;
+    VC->tgtUnset = false;
+  }
+  return;
+}
+
+void PAS::Button_PB() {
+  return;
+}
+
+void PAS::Button_NL() {
+  BaseSelect::RunwayDef *r = GC->bs.GetNextRunway();
+  VC->tgtBaseLoc = r->runwayname;
+  return;
+}
+
+void PAS::Button_PL() {
+  return;
+}
+
+void PAS::Button_MAN() {
   return;
 }

@@ -55,7 +55,7 @@
 
 PAS_GCore *g_SC = nullptr;    // points to the static persistence core
 const char *g_moduleName = "PAS";
-const char *g_moduleVersion = "0.1c";
+const char *g_moduleVersion = "0.1d";
 const char *g_moduleCompileDate = __DATE__;
 
 // ====================================================================================================================

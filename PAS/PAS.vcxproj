@@ -73,6 +73,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseSelect.cpp" />
     <ClCompile Include="CoordFunctions.cpp" />
     <ClCompile Include="DisplayEngUnitFunctions.cpp" />
     <ClCompile Include="MFDPersist.cpp" />
@@ -93,6 +94,7 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseSelect.hpp" />
     <ClInclude Include="CoordFunctions.hpp" />
     <ClInclude Include="DisplayEngUnitFunctions.h" />
     <ClInclude Include="MFDButtonPage.hpp" />
@@ -104,6 +106,9 @@
     <ClInclude Include="PAS_Interface.hpp" />
     <ClInclude Include="PAS_LCore.hpp" />
     <ClInclude Include="PAS_VCore.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BaseDefs.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

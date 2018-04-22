@@ -17,11 +17,10 @@
 #include "PAS_Buttons.hpp"
 #include "MFDPersist.hpp"
 #include "MMExt2_Advanced.hpp"
-using namespace std;
+#include "BaseSelect.hpp"
 
 #ifndef _PAS_GCORE_H
 #define _PAS_GCORE_H
-
 
 //+++++
 // Global Persistence core. One of these is instantiated for the whole orbiter session, on the first launch of this MFD type
@@ -36,12 +35,14 @@ class PAS_GCore {
     ~PAS_GCore();
     MFDPersist P;
     bool showHUD = true;
+    BaseSelect bs;
 
   private:
     double coreSimT{ 0.0 };
     double coreSimDT;
     MMExt2::Advanced mma;
     bool mma_ok;
+
 };
 
 

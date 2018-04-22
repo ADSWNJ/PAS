@@ -36,7 +36,14 @@ public:
 
   // Button Press Handlers
   void Button_MOD();
+  void Button_TGT();
   void Button_HUD();
+  void Button_OK();
+  void Button_NB();
+  void Button_PB();
+  void Button_NL();
+  void Button_PL();
+  void Button_MAN();
 
   // Persistence functions
   void ReadStatus(FILEHANDLE scn);

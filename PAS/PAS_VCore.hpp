@@ -43,6 +43,16 @@ class PAS_VCore {
     int logState;                  // 1 if we are logging, 0 if not
     char clName[128];              // class name for vessel
 
+    // Base Location data
+    OBJHANDLE ohBase{ nullptr };
+    string tgtBaseName{ "" };
+    string tgtBaseLoc{ "" };
+    double tgtLatDeg{ 0.0 };
+    double tgtLonDeg{ 0.0 };
+    bool tgtManual{ false };
+    bool tgtUnset{ true };
+
+
 };
 
 
