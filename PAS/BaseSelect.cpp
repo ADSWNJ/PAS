@@ -13,7 +13,7 @@ BaseSelect::BaseSelect(const std::string & baseCfgFile) {
   BaseWrapper bw;
   RunwayWrapper rw;
   int baseCfgLine = 0;
-  int baseCount = -1;
+  int b{0};
 
   try {
     while (std::getline(ifs, line), !ifs.eof()) {
@@ -26,15 +26,16 @@ BaseSelect::BaseSelect(const std::string & baseCfgFile) {
       case base:
         iss >> bw;
         if (!bw.baseOK) continue;
-        m_base.push_back(bw.base);
-        baseCount++;
+        m_cel[bw.celname].base.push_back(bw.base);
+        m_cel[bw.celname].celname = bw.celname;
         break;
       case runway:
-        rw.basename = bw.basename;
-        rw.baseskip = bw.baseOK;
+        rw.basename = bw.base.basename;
+        rw.baseskip = !bw.baseOK;
         iss >> rw;
         if (!rw.runwayOK) continue;
-        m_base[baseCount].runway.push_back(rw.runway);
+        b = m_cel[bw.celname].base.size() - 1;
+        m_cel[bw.celname].base[b].runway.push_back(rw.runway);
         break;
       default:
         if (tok.length() != 0 && tok[0] != ';') {
@@ -98,19 +99,19 @@ std::istream & operator>>(std::istream & iss, BaseSelect::RunwayWrapper & rw)
 
 std::istream & operator>>(std::istream & iss, BaseSelect::BaseWrapper & bw)
 {
-  std::string celbody;
   bw.baseOK = true;
-  iss >> std::quoted(celbody) >> std::quoted(bw.basename) >> bw.base.lon >> bw.base.lat;
-  if (!(bw.base.ohCelbody = oapiGetObjectByName(const_cast<char *>(celbody.c_str()))) || oapiGetObjectType(bw.base.ohCelbody) != OBJTP_PLANET) {
+  iss >> std::quoted(bw.celname) >> std::quoted(bw.base.basename) >> bw.base.lon >> bw.base.lat;
+  bw.ohCel = nullptr;
+  if (!(bw.ohCel = oapiGetObjectByName(const_cast<char *>(bw.celname.c_str()))) || oapiGetObjectType(bw.ohCel) != OBJTP_PLANET) {
     char buf[128];
-    sprintf_s(buf, 128, "   >>> PAS BaseDef skipped base %s on %s: planet not defined in this run!", bw.basename.c_str(), celbody.c_str());
+    sprintf_s(buf, 128, "   >>> PAS BaseDef skipped base %s on %s: planet not defined in this run!", bw.base.basename.c_str(), bw.celname.c_str());
     oapiWriteLog(buf);
     bw.baseOK = false;
     return iss;
   }
-  if (!(bw.base.ohBase = oapiGetBaseByName(bw.base.ohCelbody, const_cast<char *>(bw.basename.c_str()))) || oapiGetObjectType(bw.base.ohBase) != OBJTP_SURFBASE) {
+  if (!(bw.base.ohBase = oapiGetBaseByName(bw.ohCel, const_cast<char *>(bw.base.basename.c_str()))) || oapiGetObjectType(bw.base.ohBase) != OBJTP_SURFBASE) {
     char buf[128];
-    sprintf_s(buf, 128, "   >>> PAS BaseDef skipped base %s on %s: base not defined in this run!", bw.basename.c_str(), celbody.c_str());
+    sprintf_s(buf, 128, "   >>> PAS BaseDef skipped base %s on %s: base not defined in this run!", bw.base.basename.c_str(), bw.celname.c_str());
     oapiWriteLog(buf);
     bw.baseOK = false;
     return iss;
@@ -119,40 +120,67 @@ std::istream & operator>>(std::istream & iss, BaseSelect::BaseWrapper & bw)
 }
 
 
-BaseSelect::BaseDef* BaseSelect::GetBase(OBJHANDLE ohBase) {
-  for (unsigned int i = 0; i < m_base.size(); i++) {
-    if (m_base[i].ohBase == ohBase) {
-      m_curBase = i;
-      m_curRunway = 0;
-      return &(m_base[m_curBase]);
-    }
+BaseSelect::BaseDef* BaseSelect::GetFirstBase(OBJHANDLE ohCel) {
+  if (ohCel != m_ohCurCel) {
+    m_ohCurCel = ohCel;
+    char celname[128];
+    oapiGetObjectName(ohCel, celname, 127);
+    m_ohCurCelName = celname;
+    m_curBase = -1;
+    m_curRunway = -1;
   }
-  return nullptr;
+  if (m_cel[m_ohCurCelName].base.size() == 0) return nullptr;
+  m_curBase = 0;
+  m_curRunway = 0;
+  return &(m_cel[m_ohCurCelName].base[m_curBase]);
 }
 
-BaseSelect::BaseDef* BaseSelect::GetNextBase() {
-  if (m_curBase == m_base.size() - 1) m_curBase = -1;
+BaseSelect::BaseDef* BaseSelect::GetNextBase(OBJHANDLE ohCel) {
+  if (ohCel != m_ohCurCel) return GetFirstBase(ohCel);
+  int bs = m_cel[m_ohCurCelName].base.size();
+  if (!bs) return nullptr;
+  if (m_curBase == bs - 1) m_curBase = -1;
   m_curBase++;
   m_curRunway = 0;
-  return &(m_base[m_curBase]);
+  return &(m_cel[m_ohCurCelName].base[m_curBase]);
 }
 
-BaseSelect::RunwayDef* BaseSelect::GetRunway(std::string runway) {
-  if (m_curBase == -1) return nullptr;
-  BaseDef& pb = m_base[m_curBase];
-  for (unsigned int i = 0; i < pb.runway.size(); i++) {
-    if (pb.runway[i].runwayname == runway) {
-      m_curRunway = i;
-      return &(m_base[m_curBase].runway[m_curRunway]);
-    }
-  }
-  return nullptr;
+BaseSelect::BaseDef* BaseSelect::GetPrevBase(OBJHANDLE ohCel) {
+  if (ohCel != m_ohCurCel) return GetFirstBase(ohCel);
+  int bs = m_cel[m_ohCurCelName].base.size();
+  if (!bs) return nullptr;
+  if (m_curBase == 0) m_curBase = bs;
+  m_curBase--;
+  m_curRunway = 0;
+  return &(m_cel[m_ohCurCelName].base[m_curBase]);
 }
 
-BaseSelect::RunwayDef* BaseSelect::GetNextRunway() {
+BaseSelect::RunwayDef* BaseSelect::GetFirstRunway(OBJHANDLE ohCel) {
+  m_curRunway = -1;
   if (m_curBase == -1) return nullptr;
-  BaseDef& pb = m_base[m_curBase];
-  if (m_curRunway == pb.runway.size() - 1) m_curRunway = -1;
+  BaseDef& pb = m_cel[m_ohCurCelName].base[m_curBase];
+  int rs = pb.runway.size();
+  if (rs == 0) return nullptr;
+  m_curRunway = 0;
+  return &(pb.runway[m_curRunway]);
+}
+
+BaseSelect::RunwayDef* BaseSelect::GetNextRunway(OBJHANDLE ohCel) {
+  if (ohCel != m_ohCurCel) return nullptr;
+  if (m_curBase == -1) return nullptr;
+  BaseDef& pb = m_cel[m_ohCurCelName].base[m_curBase];
+  int rs = pb.runway.size();
+  if (m_curRunway == rs - 1) m_curRunway = -1;
   m_curRunway++;
-  return &(m_base[m_curBase].runway[m_curRunway]);
+  return &(pb.runway[m_curRunway]);
+}
+
+BaseSelect::RunwayDef* BaseSelect::GetPrevRunway(OBJHANDLE ohCel) {
+  if (ohCel != m_ohCurCel) return nullptr;
+  if (m_curBase == -1) return nullptr;
+  BaseDef& pb = m_cel[m_ohCurCelName].base[m_curBase];
+  int rs = pb.runway.size();
+  if (m_curRunway == 0) m_curRunway = rs;
+  m_curRunway--;
+  return &(pb.runway[m_curRunway]);
 }

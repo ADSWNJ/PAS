@@ -13,7 +13,7 @@
 #include <string>
 #include "PAS_GCore.hpp"
 #include "PAS_VCore.hpp"
-#include "AutoPatch.hpp"
+//#include "AutoPatch.hpp"
 
 // ====================================================================================================================
 // Global variables
@@ -31,7 +31,7 @@ PAS_GCore::PAS_GCore()
   char buf[128];
   sprintf(buf, "   >>> %s connected to MMExt version %s", g_moduleName, mma_ver.c_str());
   oapiWriteLog(buf);
-  AutoPatch::Execute();
+  //AutoPatch::Execute();
   return;
 }
 
@@ -60,4 +60,4 @@ void PAS_GCore::corePreStep(double simT,double simDT,double mjd) {
 
 }
 
-AUTOPATCH_TGT("Plugin\\PAS.dll");
+//AUTOPATCH_TGT("Plugin\\PAS.dll");

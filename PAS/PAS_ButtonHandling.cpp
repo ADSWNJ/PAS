@@ -66,10 +66,14 @@ void PAS::Button_OK() {
 }
 
 void PAS::Button_NB() {
-  BaseSelect::BaseDef *b = GC->bs.GetNextBase();
+  OBJHANDLE ohCel = VC->v->GetGravityRef();
+  char cel[128];
+  oapiGetObjectName(ohCel, cel, 127);
+  BaseSelect::BaseDef *b = GC->bs.GetNextBase(ohCel);
   if (b) {
-    BaseSelect::RunwayDef *r = GC->bs.GetNextRunway();
+    BaseSelect::RunwayDef *r = GC->bs.GetFirstRunway(VC->v->GetGravityRef());
     VC->ohBase = b->ohBase;
+    VC->tgtBaseName = b->basename;
     VC->tgtBaseLoc = r->runwayname;
     VC->tgtLatDeg = b->lat;
     VC->tgtLonDeg = b->lon;
@@ -80,16 +84,29 @@ void PAS::Button_NB() {
 }
 
 void PAS::Button_PB() {
+  BaseSelect::BaseDef *b = GC->bs.GetPrevBase(VC->v->GetGravityRef());
+  if (b) {
+    BaseSelect::RunwayDef *r = GC->bs.GetFirstRunway(VC->v->GetGravityRef());
+    VC->ohBase = b->ohBase;
+    VC->tgtBaseName = b->basename;
+    VC->tgtBaseLoc = r->runwayname;
+    VC->tgtLatDeg = b->lat;
+    VC->tgtLonDeg = b->lon;
+    VC->tgtManual = false;
+    VC->tgtUnset = false;
+  }
   return;
 }
 
 void PAS::Button_NL() {
-  BaseSelect::RunwayDef *r = GC->bs.GetNextRunway();
+  BaseSelect::RunwayDef *r = GC->bs.GetNextRunway(VC->v->GetGravityRef());
   VC->tgtBaseLoc = r->runwayname;
   return;
 }
 
 void PAS::Button_PL() {
+  BaseSelect::RunwayDef *r = GC->bs.GetPrevRunway(VC->v->GetGravityRef());
+  VC->tgtBaseLoc = r->runwayname;
   return;
 }
 

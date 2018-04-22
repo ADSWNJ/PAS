@@ -24,7 +24,6 @@
 class BaseSelect {
 public:
   struct RunwayDef {
-
     std::string runwayname;
     double end11, end13, end21, end23;
     double papi, vasi, alt;
@@ -32,10 +31,16 @@ public:
   };
 
   struct BaseDef {
-    OBJHANDLE ohCelbody;
     OBJHANDLE ohBase;
+    std::string basename;
     double lon, lat;
     std::vector<RunwayDef> runway;
+  };
+
+  struct CelDef {
+    OBJHANDLE ohCelbody;
+    std::string celname;
+    std::vector<BaseDef> base;
   };
 
   BaseSelect(const std::string &baseCfgFile);
@@ -44,10 +49,12 @@ public:
   const std::string& errMsg();
   const std::string& errLineStr();
 
-  BaseDef* GetBase(OBJHANDLE ohBase);
-  BaseDef* GetNextBase();
-  RunwayDef* GetRunway(std::string runway);
-  RunwayDef* GetNextRunway();
+  BaseDef* GetFirstBase(OBJHANDLE ohCel);
+  BaseDef* GetNextBase(OBJHANDLE ohCel);
+  BaseDef* GetPrevBase(OBJHANDLE ohCel);
+  RunwayDef* GetFirstRunway(OBJHANDLE ohCel);
+  RunwayDef* GetNextRunway(OBJHANDLE ohCel);
+  RunwayDef* GetPrevRunway(OBJHANDLE ohCel);
 
 private:
 
@@ -56,7 +63,8 @@ private:
   struct BaseWrapper {
     struct BaseDef base;
     bool baseOK;
-    std::string basename;
+    OBJHANDLE ohCel;
+    std::string celname;
   };
 
   struct RunwayWrapper {
@@ -67,7 +75,7 @@ private:
   };
 
 
-  std::vector<BaseDef> m_base;
+  std::map<std::string, CelDef> m_cel;
   const enum BaseSelectVerbNames { base = 10000, runway = 10001 };
   std::map<std::string, BaseSelectVerbNames> m_baseSelectVerbs;
   bool m_initOK;
@@ -79,5 +87,7 @@ private:
 
   int m_curBase{ -1 };
   int m_curRunway{ -1 };
+  OBJHANDLE m_ohCurCel{ nullptr };
+  std::string m_ohCurCelName{ "" };
 
 };
