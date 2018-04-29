@@ -42,6 +42,8 @@ void PAS_VCore::corePreStep(double p_simT,double p_simDT,double p_mjd) {
   double vCOGe = v->GetCOG_elev();
   bool ground_contact = v->GroundContact();
   if (ofsNED.z < vCOGe || ground_contact) ofsNED.z = 0.0;
+  if (abs(ofsNED.x) < 0.01) ofsNED.x = 0.0;
+  if (abs(ofsNED.y) < 0.01) ofsNED.y = 0.0;
   ofsAHDD = cf.cnv(AHDD, NED, ofsNED);
   return;
 }

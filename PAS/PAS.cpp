@@ -37,7 +37,7 @@
 //  V1.00	Initial Release
 // ====================================================================================================================
 
-#define STRICT
+//#define STRICT
 #define ORBITER_MODULE
 
 #include "windows.h"
