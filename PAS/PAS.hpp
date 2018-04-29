@@ -86,6 +86,9 @@ protected:
 
   oapi::Font *font;
 
+  // Helper Function for location setting
+  void UpdateLocation(BaseSelect::RunwayDef *r);
+
 };
 
 #endif // !__PAS_H

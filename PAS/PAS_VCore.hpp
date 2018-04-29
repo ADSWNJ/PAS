@@ -47,12 +47,23 @@ class PAS_VCore {
     OBJHANDLE ohBase{ nullptr };
     string tgtBaseName{ "" };
     string tgtBaseLoc{ "" };
-    double tgtLatDeg{ 0.0 };
-    double tgtLonDeg{ 0.0 };
     bool tgtManual{ false };
     bool tgtUnset{ true };
 
+    // Vessel locations
+    VECTOR3 vesLLAD;
+    VECTOR3 vesECEF;
 
+    // Target locations
+    VECTOR3 tgtLLAD;
+    VECTOR3 tgtECEF;
+
+    // Offset locations
+    VECTOR3 ofsNED;
+    VECTOR3 ofsAHDD;
+
+    // Coord Functions
+    CoordFunctions cf;
 };
 
 

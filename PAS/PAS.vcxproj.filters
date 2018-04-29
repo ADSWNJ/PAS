@@ -66,6 +66,9 @@
     <ClCompile Include="BaseSelect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PAS_DialogFunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
@@ -107,6 +110,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BaseSelect.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PAS_DialogFunc.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

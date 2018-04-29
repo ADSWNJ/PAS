@@ -11,21 +11,29 @@
 //
 
 
-// Four coordinate systems are used...
-// "llr" means longitude [rad], latitude [rad], radius [m] ... defining our 3D point realtive to the planet core as a function of long and lat angles and a radius from core
-// "lla" means longitude [rad], latitude [rad], altitude [m] ... defining our 3D point realtive to the planet core as a function of long and lat angles and a local altitude at that point (or mean alt if no elevation data)
-// "llad" means longitude [deg], latitude [deg], altitude [m] ... a display convenience in degrees (as all internal work is in radians)
-// "ecef" means ECEF Right Handed Cartesian coordinates (X-axis points to 0-lon 0-lat, Y-axis points to 90E-lon, 0-lat, Z-axis points to North Pole 90N)
+// Six coordinate systems are used...
+// "llad" means longitude [deg], latitude [deg], altitude [m]... defining our 3D point relative to the planet core as a function of lon and lat angles and the local altitude from the elevation functions
+// "lla" means longitude [rad], latitude [rad], altitude [m] ... defining our 3D point relative to the planet core as a function of lon and lat angles and the local altitude from the elevation functions
+// "llr" means longitude [rad], latitude [rad], radius [m] ... defining our 3D point relative to the planet core as a function of lon and lat angles and a radius from core
+// "gpos" global position, in global frame (ecliptic equinox J2000.0 frame)
+// "rpos" relative position to main gravity source, in global frame (ecliptic equinox J2000.0 frame)
+// "ecef" means ECEF Cartesian coordinates [m] from the core (X-axis is core to 0-lat 0-lon, Y-axis is core to 0-lat 90E-lon, Z-axis is North Pole 90N)
 //
 // Three relative vector systems are used...
-// "rpos" means relative position to the planet, in global ecliptic frame coordinates (as delivered by orbiter's GetRelativePos() function)
-// "ahd" means azimuth [rad], horizontal range [m], down (height) [m] from a refeence point (e.g. a base). Eg. ahd of {PI, 50000, 1000} is azimuth 180 deg, 50km ground track, 1km down
-// "ned" means north [m], east [m], down [m] from a reference point (e.g. a base), on a local flat projection plane (useful within say 100 km of landing). 
+// "ned" means north, east, down [m] ... i.e. on a flattened out map, this distance north, this distance east, this distance down (simplified spherical model, good for say 200km x 200km)
+// "ahd" means azimuth [rad], horizontal-offset [m], down-offset range [m] ... i.e. this bearing for this horizontal distance, and this vertical down disatance
+// "ahdd" means azimuth [deg], horizontal-offset [m], down-offset range [m] ... i.e. this bearing for this horizontal distance, and this vertical down disatance
 //
-// Transformation path:  RPOS <> ECEF <> LLR <> LLA -> LLAD 
-// Relative transformation path:   ECEF+ECEF -> NED <> ARR -> ARRD, and ECEF+NED -> ECEF
+// Conversion paths are as follows:
+// LLAD <> LLA <> LLR <> ECEF <> RPOS <> GPOS
+// ECEF tgt + ECEF ref -> NED
+// NED + ECEF ref -> ECEF tgt
+// NED <> AHD <> AHDD
+// 
+// The cnv function automatically does intermediate transforms to deliver any to any conversions.
+// Examples:
+// VECTOR3 ecef_target = cf.cnv(ECEF, RPOD, 
 //
-
 
 #include "orbitersdk.h"
 #include <limits>

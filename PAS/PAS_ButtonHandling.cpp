@@ -10,8 +10,9 @@
 //
 // ==============================================================
 
-#include "PAS.hpp"
 #include <math.h>
+#include "PAS.hpp"
+#include "PAS_DialogFunc.hpp"
 
 // ==============================================================
 // MFD button hooks to Button Page library
@@ -72,13 +73,7 @@ void PAS::Button_NB() {
   BaseSelect::BaseDef *b = GC->bs.GetNextBase(ohCel);
   if (b) {
     BaseSelect::RunwayDef *r = GC->bs.GetFirstRunway(VC->v->GetGravityRef());
-    VC->ohBase = b->ohBase;
-    VC->tgtBaseName = b->basename;
-    VC->tgtBaseLoc = r->runwayname;
-    VC->tgtLatDeg = b->lat;
-    VC->tgtLonDeg = b->lon;
-    VC->tgtManual = false;
-    VC->tgtUnset = false;
+    UpdateLocation(r);
   }
   return;
 }
@@ -87,29 +82,42 @@ void PAS::Button_PB() {
   BaseSelect::BaseDef *b = GC->bs.GetPrevBase(VC->v->GetGravityRef());
   if (b) {
     BaseSelect::RunwayDef *r = GC->bs.GetFirstRunway(VC->v->GetGravityRef());
-    VC->ohBase = b->ohBase;
-    VC->tgtBaseName = b->basename;
-    VC->tgtBaseLoc = r->runwayname;
-    VC->tgtLatDeg = b->lat;
-    VC->tgtLonDeg = b->lon;
-    VC->tgtManual = false;
-    VC->tgtUnset = false;
+    UpdateLocation(r);
   }
   return;
 }
 
 void PAS::Button_NL() {
   BaseSelect::RunwayDef *r = GC->bs.GetNextRunway(VC->v->GetGravityRef());
-  VC->tgtBaseLoc = r->runwayname;
+  UpdateLocation(r);
   return;
 }
 
 void PAS::Button_PL() {
   BaseSelect::RunwayDef *r = GC->bs.GetPrevRunway(VC->v->GetGravityRef());
-  VC->tgtBaseLoc = r->runwayname;
+  UpdateLocation(r);
   return;
 }
 
 void PAS::Button_MAN() {
+  char buf[32];
+  char prompt[] = "Enter manual target coords: e.g. N24.68 W123.45";
+  sprintf_s(buf, 32, "%c%.2f %c%.2f", VC->tgtLLAD.y >= 0.0 ? 'N' : 'S', abs(VC->tgtLLAD.y), VC->tgtLLAD.x >= 0.0 ? 'E' : 'W', abs(VC->tgtLLAD.x));
+  oapiOpenInputBox(prompt, PAS_DialogFunc::clbkENT, buf, 32, LC); 
+  return;
+}
+
+
+void PAS::UpdateLocation(BaseSelect::RunwayDef *r) {
+  BaseSelect::BaseDef *b = r->base;
+  VC->ohBase = b->ohBase;
+  VC->tgtBaseName = b->basename;
+  VC->tgtBaseLoc = r->runwayname;
+  VC->tgtLLAD = _V(b->lon, b->lat, 0.0);
+  VECTOR3 baseECEF = VC->cf.cnv(ECEF, LLAD, VC->tgtLLAD);
+  VECTOR3 locNED = _V(-r->end11, r->end13, 0.0);
+  VC->tgtECEF = VC->cf.cnv(ECEF, NED, locNED, ECEF, baseECEF);
+  VC->tgtManual = false;
+  VC->tgtUnset = false;
   return;
 }

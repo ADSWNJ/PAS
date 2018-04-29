@@ -81,6 +81,7 @@
     <ClCompile Include="PAS.cpp" />
     <ClCompile Include="PAS_ButtonHandling.cpp" />
     <ClCompile Include="PAS_Buttons.cpp" />
+    <ClCompile Include="PAS_DialogFunc.cpp" />
     <ClCompile Include="PAS_GCore.cpp" />
     <ClCompile Include="PAS_HUDUpdate.cpp" />
     <ClCompile Include="PAS_Interface.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="ParseFunctions.h" />
     <ClInclude Include="PAS.hpp" />
     <ClInclude Include="PAS_Buttons.hpp" />
+    <ClInclude Include="PAS_DialogFunc.hpp" />
     <ClInclude Include="PAS_GCore.hpp" />
     <ClInclude Include="PAS_Interface.hpp" />
     <ClInclude Include="PAS_LCore.hpp" />

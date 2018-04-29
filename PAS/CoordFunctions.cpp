@@ -30,7 +30,7 @@
 //
 // Conversion paths are as follows:
 // LLAD <> LLA <> LLR <> ECEF 
-// RPOS <> ECEF
+// GPOS <> RPOS <> ECEF
 // ECEF tgt + ECEF ref -> NED
 // NED + ECEF ref -> ECEF tgt
 // NED <> AHD <> AHDD

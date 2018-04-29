@@ -35,6 +35,7 @@ BaseSelect::BaseSelect(const std::string & baseCfgFile) {
         iss >> rw;
         if (!rw.runwayOK) continue;
         b = m_cel[bw.celname].base.size() - 1;
+        rw.runway.base = &m_cel[bw.celname].base[b];
         m_cel[bw.celname].base[b].runway.push_back(rw.runway);
         break;
       default:

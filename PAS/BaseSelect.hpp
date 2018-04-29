@@ -23,7 +23,10 @@
 
 class BaseSelect {
 public:
+  struct BaseDef;
+
   struct RunwayDef {
+    BaseDef *base;
     std::string runwayname;
     double end11, end13, end21, end23;
     double papi, vasi, alt;

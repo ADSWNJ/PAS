@@ -38,8 +38,14 @@ bool PAS::Update(oapi::Sketchpad *skp)
         skpFormatText(0, l++, "Landing: %s", VC->tgtBaseLoc.c_str());
       }
       char locStr[33];
-      sprintf_s(locStr, 32, "%c%.2f %c%.2f", (VC->tgtLatDeg >= 0.0) ? 'N' : 'S', abs(VC->tgtLatDeg), (VC->tgtLonDeg >= 0.0) ? 'E' : 'W', abs(VC->tgtLonDeg));
+      sprintf_s(locStr, 32, "%c%.2f %c%.2f", (VC->tgtLLAD.y >= 0.0) ? 'N' : 'S', abs(VC->tgtLLAD.y), (VC->tgtLLAD.x >= 0.0) ? 'E' : 'W', abs(VC->tgtLLAD.x));
       skpFormatText(0, l++, "Lat/Lon: %s", locStr);
+
+      skpFormatText(0, l++, "Azimuth: %.2f", VC->ofsAHDD.x);
+      skpFormatText(0, l++, "Range:   %.2f", VC->ofsAHDD.y);
+      skpFormatText(0, l++, "North:   %.2f", VC->ofsNED.x);
+      skpFormatText(0, l++, "East:    %.2f", VC->ofsNED.y);
+      skpFormatText(0, l++, "Down:    %.2f", VC->ofsAHDD.z);
     }
 
     break;
@@ -58,7 +64,7 @@ bool PAS::Update(oapi::Sketchpad *skp)
         skpFormatText(0, l++, "Landing: %s", VC->tgtBaseLoc.c_str());
       }
       char locStr[33];
-      sprintf_s(locStr, 32, "%c%.2f %c%.2f", (VC->tgtLatDeg >= 0.0) ? 'N' : 'S', abs(VC->tgtLatDeg), (VC->tgtLonDeg >= 0.0) ? 'E' : 'W', abs(VC->tgtLonDeg));
+      sprintf_s(locStr, 32, "%c%.2f %c%.2f", (VC->tgtLLAD.y >= 0.0) ? 'N' : 'S', abs(VC->tgtLLAD.y), (VC->tgtLLAD.x >= 0.0) ? 'E' : 'W', abs(VC->tgtLLAD.x));
       skpFormatText(0, l++, "Lat/Lon: %s", locStr);
     }
     break;
